@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<style>
+			#network {
+				height: 100%;
+				width: 100%;
+			}
+		</style>
+		<script src="../js/sigma.min.js"></script>
+		<script src="../js/sigma.parsers.gexf.min.js"></script>
+		<script>
+			sigma.parsers.gexf('data.gexf', {
+				container: 'network',
+				settings: {
+					defaultNodeColor: '#ec5148'
+				}
+			})
+		</script>
+	</head>
+	<body>
+		<div id="network"></div>
+	</body>
+</html>
