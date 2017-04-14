@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.3" version="1.3" xmlns:viz="http://www.gexf.net/1.3/viz" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.3 http://www.gexf.net/1.3/gexf.xsd">
+  <meta lastmodifieddate="2017-04-13">
+    <creator>Gephi 0.9</creator>
+    <description></description>
+  </meta>
+  <graph mode="static">
+    <attributes class="node" mode="static">
+      <attribute id="deginf" title="DegInf" type="string"></attribute>
+      <attribute id="category" title="Category" type="string"></attribute>
+    </attributes>
+    <attributes class="edge" mode="static">
+      <attribute id="deginf" title="DegInf" type="string"></attribute>
+    </attributes>
+    <nodes>
+      <node id="1" label="Blender">
+        <attvalues>
+          <attvalue for="deginf" value="4"></attvalue>
+          <attvalue for="category" value="Design"></attvalue>
+        </attvalues>
+        <viz:size value="18.857143"></viz:size>
+        <viz:position x="-257.8554" y="597.7885"></viz:position>
+        <viz:color r="0" g="230" b="106"></viz:color>
+      </node>
+      <node id="2" label="Truck">
+        <attvalues>
+          <attvalue for="deginf" value="5"></attvalue>
+          <attvalue for="category" value="Design"></attvalue>
+        </attvalues>
+        <viz:size value="30.285715"></viz:size>
+        <viz:position x="-63.306217" y="439.80127"></viz:position>
+        <viz:color r="0" g="230" b="106"></viz:color>
+      </node>
+      <node id="3" label="Mel">
+        <attvalues>
+          <attvalue for="deginf" value="5"></attvalue>
+          <attvalue for="category" value="Lifestyle"></attvalue>
+        </attvalues>
+        <viz:size value="36.0"></viz:size>
+        <viz:position x="13.745446" y="159.96657"></viz:position>
+        <viz:color r="250" g="0" b="15"></viz:color>
+      </node>
+      <node id="4" label="Illinois">
+        <attvalues>
+          <attvalue for="deginf" value="4"></attvalue>
+          <attvalue for="category" value="Places"></attvalue>
+        </attvalues>
+        <viz:size value="27.428572"></viz:size>
+        <viz:position x="251.57436" y="301.68185"></viz:position>
+        <viz:color r="32" g="20" b="255"></viz:color>
+      </node>
+      <node id="5" label="Ark">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+          <attvalue for="category" value="Lifestyle"></attvalue>
+        </attvalues>
+        <viz:size value="21.714287"></viz:size>
+        <viz:position x="-247.56247" y="-552.87317"></viz:position>
+        <viz:color r="250" g="0" b="15"></viz:color>
+      </node>
+      <node id="6" label="SDV">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+          <attvalue for="category" value="Lifestyle"></attvalue>
+        </attvalues>
+        <viz:size value="18.857143"></viz:size>
+        <viz:position x="-316.0607" y="-739.73413"></viz:position>
+        <viz:color r="250" g="0" b="15"></viz:color>
+      </node>
+      <node id="7" label="Straight Roads">
+        <attvalues>
+          <attvalue for="deginf" value="2"></attvalue>
+          <attvalue for="category" value="Places"></attvalue>
+        </attvalues>
+        <viz:size value="21.714287"></viz:size>
+        <viz:position x="703.8087" y="235.79282"></viz:position>
+        <viz:color r="32" g="20" b="255"></viz:color>
+      </node>
+      <node id="8" label="Corned Beef">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+          <attvalue for="category" value="Lifestyle"></attvalue>
+        </attvalues>
+        <viz:size value="20.285713"></viz:size>
+        <viz:position x="-382.02197" y="-919.67426"></viz:position>
+        <viz:color r="250" g="0" b="15"></viz:color>
+      </node>
+      <node id="9" label="Beaches">
+        <attvalues>
+          <attvalue for="deginf" value="4"></attvalue>
+          <attvalue for="category" value="Places"></attvalue>
+        </attvalues>
+        <viz:size value="21.714287"></viz:size>
+        <viz:position x="492.27975" y="266.61188"></viz:position>
+        <viz:color r="32" g="20" b="255"></viz:color>
+      </node>
+      <node id="10" label="Showers">
+        <attvalues>
+          <attvalue for="deginf" value="4"></attvalue>
+          <attvalue for="category" value="Lifestyle"></attvalue>
+        </attvalues>
+        <viz:size value="21.714287"></viz:size>
+        <viz:position x="-85.19639" y="-109.94365"></viz:position>
+        <viz:color r="250" g="0" b="15"></viz:color>
+      </node>
+      <node id="11" label="TGI Fridays">
+        <attvalues>
+          <attvalue for="deginf" value="2"></attvalue>
+          <attvalue for="category" value="Places"></attvalue>
+        </attvalues>
+        <viz:size value="16.0"></viz:size>
+        <viz:position x="886.1614" y="209.22467"></viz:position>
+        <viz:color r="32" g="20" b="255"></viz:color>
+      </node>
+      <node id="12" label="Redbull">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+          <attvalue for="category" value="Lifestyle"></attvalue>
+        </attvalues>
+        <viz:size value="17.428572"></viz:size>
+        <viz:position x="-445.44626" y="-1092.6936"></viz:position>
+        <viz:color r="250" g="0" b="15"></viz:color>
+      </node>
+      <node id="13" label="Space Movies">
+        <attvalues>
+          <attvalue for="deginf" value="2"></attvalue>
+          <attvalue for="category" value="Lifestyle"></attvalue>
+        </attvalues>
+        <viz:size value="17.428572"></viz:size>
+        <viz:position x="-503.79648" y="-1251.8716"></viz:position>
+        <viz:color r="250" g="0" b="15"></viz:color>
+      </node>
+      <node id="14" label="Tyler">
+        <attvalues>
+          <attvalue for="deginf" value="4"></attvalue>
+          <attvalue for="category" value="Lifestyle"></attvalue>
+        </attvalues>
+        <viz:size value="26.0"></viz:size>
+        <viz:position x="-166.37943" y="-331.4084"></viz:position>
+        <viz:color r="250" g="0" b="15"></viz:color>
+      </node>
+      <node id="15" label="Scented Detergent">
+        <attvalues>
+          <attvalue for="deginf" value="1"></attvalue>
+          <attvalue for="category" value="Design"></attvalue>
+        </attvalues>
+        <viz:size value="18.857143"></viz:size>
+        <viz:position x="-400.90628" y="713.9555"></viz:position>
+        <viz:color r="0" g="230" b="106"></viz:color>
+      </node>
+      <node id="19" label="Trevor">
+        <attvalues>
+          <attvalue for="deginf" value="5"></attvalue>
+        </attvalues>
+        <viz:size value="36.0"></viz:size>
+        <viz:position x="436.27637" y="752.60565"></viz:position>
+        <viz:color r="31" g="0" b="2"></viz:color>
+      </node>
+    </nodes>
+    <edges>
+      <edge id="34" source="1" target="2" type="directed" weight="3.0">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="35" source="2" target="1" type="directed" weight="3.0">
+        <attvalues>
+          <attvalue for="deginf" value="1"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="36" source="2" target="3" type="directed" weight="2.0">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="37" source="3" target="2" type="directed" weight="2.0">
+        <attvalues>
+          <attvalue for="deginf" value="2"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="38" source="2" target="4" type="directed">
+        <attvalues>
+          <attvalue for="deginf" value="0"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="39" source="4" target="2" type="directed">
+        <attvalues>
+          <attvalue for="deginf" value="1"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="40" source="7" target="2" type="directed">
+        <attvalues>
+          <attvalue for="deginf" value="2"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="41" source="2" target="8" type="directed">
+        <attvalues>
+          <attvalue for="deginf" value="1"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="42" source="9" target="2" type="directed" weight="3.0">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="43" source="2" target="19" type="directed" weight="2.0">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="44" source="2" target="12" type="directed" weight="2.0">
+        <attvalues>
+          <attvalue for="deginf" value="1"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="45" source="4" target="3" type="directed" weight="2.0">
+        <attvalues>
+          <attvalue for="deginf" value="1"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="46" source="3" target="5" type="directed">
+        <attvalues>
+          <attvalue for="deginf" value="1"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="47" source="5" target="3" type="directed" weight="2.0">
+        <attvalues>
+          <attvalue for="deginf" value="1"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="48" source="3" target="6" type="directed" weight="2.0">
+        <attvalues>
+          <attvalue for="deginf" value="1"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="49" source="6" target="3" type="directed" weight="3.0">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="50" source="3" target="8" type="directed" weight="2.0">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="51" source="3" target="9" type="directed" weight="2.0">
+        <attvalues>
+          <attvalue for="deginf" value="2"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="52" source="9" target="3" type="directed" weight="3.0">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="53" source="3" target="10" type="directed" weight="3.0">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="54" source="10" target="3" type="directed" weight="2.0">
+        <attvalues>
+          <attvalue for="deginf" value="2"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="55" source="3" target="15" type="directed">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="56" source="15" target="3" type="directed">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="57" source="4" target="7" type="directed" weight="3.0">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="58" source="7" target="4" type="directed" weight="3.0">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="59" source="4" target="10" type="directed">
+        <attvalues>
+          <attvalue for="deginf" value="1"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="60" source="4" target="14" type="directed" weight="3.0">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="61" source="14" target="4" type="directed" weight="3.0">
+        <attvalues>
+          <attvalue for="deginf" value="3"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="62" source="5" target="14" type="directed">
+        <attvalues>
+          <attvalue for="deginf" value="1"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="63" source="14" target="5" type="directed" weight="2.0">
+        <attvalues>
+          <attvalue for="deginf" value="2"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="64" source="7" target="14" type="directed">
+        <attvalues>
+          <attvalue for="deginf" value="1"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="65" source="8" target="14" type="directed">
+        <attvalues>
+          <attvalue for="deginf" value="1"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="66" source="9" target="10" type="directed">
+        <attvalues>
+          <attvalue for="deginf" value="2"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="67" source="13" target="14" type="directed" weight="2.0">
+        <attvalues>
+          <attvalue for="deginf" value="2"></attvalue>
+        </attvalues>
+      </edge>
+      <edge id="68" source="19" target="1" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+      <edge id="70" source="19" target="3" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+      <edge id="71" source="19" target="4" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+      <edge id="72" source="19" target="5" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+      <edge id="73" source="19" target="6" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+      <edge id="74" source="19" target="7" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+      <edge id="75" source="19" target="8" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+      <edge id="76" source="19" target="9" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+      <edge id="77" source="19" target="10" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+      <edge id="78" source="19" target="11" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+      <edge id="79" source="19" target="12" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+      <edge id="80" source="19" target="13" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+      <edge id="81" source="19" target="14" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+      <edge id="82" source="19" target="15" type="undirected">
+        <attvalues></attvalues>
+      </edge>
+    </edges>
+  </graph>
+</gexf>
