@@ -4,20 +4,24 @@
 			.link {
 				stroke: #333;
 				stroke-opacity: 0.8;
+				stroke-width: 0.5px;
 			}
 
 			.link.active {
 				stroke: #c33;
 				stroke-opactiy: 1.0;
+				stroke-width: 2px;
 			}
+
 			.node {
 				stroke: #000;
 				stroke-width: 0px;
 			}
 
 			.node.active {
-				stroke: #c33;
+				stroke: #000;
 				stroke-width: 2px;
+				fill: #c33;
 			}
 		</style>
 		<script src="https://d3js.org/d3.v4.min.js"></script>
@@ -75,7 +79,7 @@
 					.enter()
 					.append("line")
 					.attr("class", "link")
-					.attr("stroke-width", function (l) { return l.size * scale / 2; })
+					//.attr("stroke-width", function (l) { return l.size * scale / 2; })
 					.attr("x1", function (l) { return l.source.x; })
 					.attr("y1", function (l) { return l.source.y; })
 					.attr("x2", function (l) { return l.target.x; })
@@ -97,7 +101,9 @@
 						.on("start", on_drag_start)
 						.on("drag", on_drag)
 						.on("end", on_drag_end))
-					.on("click", on_node_click);
+					.on("click", on_node_click)
+					.on("mouseover", on_node_mouseenter)
+					.on("mouseout", on_node_mouseexit);
 
 				node.append("title").text(function (d) { return d.label; });
 
@@ -129,24 +135,40 @@
 			}
 
 			function on_drag_start(d) {
-			  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-			  d.fx = d.x;
-			  d.fy = d.y;
+				if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+				d.fx = d.x;
+				d.fy = d.y;
 			}
 
 			function on_drag(d) {
-			  d.fx = d3.event.x;
-			  d.fy = d3.event.y;
+				d.fx = d3.event.x;
+				d.fy = d3.event.y;
 			}
 
 			function on_drag_end(d) {
-			  if (!d3.event.active) simulation.alphaTarget(0);
-			  d.fx = null;
-			  d.fy = null;
+				if (!d3.event.active) simulation.alphaTarget(0);
+				d.fx = null;
+				d.fy = null;
 			}
 
+			var selectedNode = undefined;
+
 			function on_node_click(n) {
+				selectedNode = n;
+				highlight_node(selectedNode);
+			}
+
+			function on_node_mouseenter(n) {
+				highlight_node(n);
+			}
+
+			function on_node_mouseexit(n) {
+				highlight_node(selectedNode);
+			}
+
+			function highlight_node(n) {
 				d3.selectAll(".node").classed("active", function (x) { return n === x; });
+				d3.selectAll(".link").classed("active", function (x) { return x.source === n || x.target === n; });
 			}
 		</script>
 	</body>
