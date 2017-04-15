@@ -12412,7 +12412,7 @@
                 "Eigenvector Centrality": "0.022368834398077214",
                 "Modularity Class": "66",
                 "xcoord": "49.63",
-                "Out Degree": "0", 
+                "Out Degree": "0",
                 "type": "university"
             },
             "y": 1313.1385,
@@ -12421,7 +12421,7 @@
             "size": 31.701187
         }
     ],
-    "links": [
+    "edges": [
         {
             "source": "1",
             "attributes": {},
