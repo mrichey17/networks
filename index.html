@@ -1,33 +1,48 @@
 <html>
 	<head>
 		<style>
-			.edge {
+			.edge line {
 				stroke: #333;
 				stroke-opacity: 0.8;
 				stroke-width: 0.5px;
 			}
 
-			.edge.active {
+			.edge.active line {
 				stroke: #c33;
 				stroke-opactiy: 1.0;
 				stroke-width: 2px;
 			}
 
-			.node {
+			.node circle {
 				stroke: #000;
 				stroke-width: 0px;
 			}
 
-			.node.active {
+			.node.active circle {
 				stroke: #000;
 				stroke-width: 2px;
 				fill: #c33;
 			}
 
-			.node.neighbor {
+			.node.neighbor circle {
 				stroke: #000;
 				stroke-width: 2px;
 				fill: #33c;
+			}
+
+			.node text {
+				font-color: #333;
+				font-weight: normal;
+				font-family: sans-serif;
+				visibility: hidden;
+			}
+
+			.node.active text {
+				visibility: visible;
+			}
+
+			.node.neighbor text {
+				visibility: visible;
 			}
 		</style>
 		<script src="js/jquery-3.2.1.min.js"></script>
@@ -143,13 +158,16 @@
 						.selectAll(".edge")
 						.data(graph.edges)
 						.enter()
-						.append("line")
-						.attr("class", "edge")
+						.append("g")
+						.attr("class", "edge");
+
+					// add lines to each edge group
+					edge.append("line")
 						//.attr("stroke-width", function (l) { return l.size * scale / 2; })
 						.attr("x1", function (l) { return l.source.x; })
 						.attr("y1", function (l) { return l.source.y; })
 						.attr("x2", function (l) { return l.target.x; })
-						.attr("y2", function (l) { return l.target.y; })
+						.attr("y2", function (l) { return l.target.y; });
 
 					// add all nodes from dataset to SVG
 					var node = svg.append("g")
@@ -157,8 +175,11 @@
 						.selectAll(".node")
 						.data(graph.nodes)
 						.enter()
-						.append("circle")
-						.attr("class", "node")
+						.append("g")
+						.attr("class", "node");
+
+					// add edges to each node group
+					node.append("circle")
 						.attr("r", function (n) { return n.size * scale / 2; })
 						.attr("fill", function (n) { return n.color; })
 						.attr("cx", function (n) { return n.x; })
@@ -172,20 +193,18 @@
 						.on("mouseover", on_node_mouseenter)
 						.on("mouseout", on_node_mouseexit);
 
-					// add node titles (currently only render as tooltips)
-					// TODO: add better labels
-					node.append("title").text(function (d) { return d.label; });
+					// add titles to each node circle
+					node.selectAll("circle").append("title").text(function (d) { return d.label; });
+
+					// add labels to each node group
+					node.append("text")
+						.text(function (d) { return d.label; })
+						.attr("x", function (n) { return n.x + (n.size * scale / 2) + 3; })
+						.attr("y", function (n) { return n.y + 4; });
 
 					// add simulation forces that pull nodes to their baked-in positions with a high strength
 					simulation.force("x", d3.forceX(function (n) { return n.x; }).strength(0.8));
 					simulation.force("y", d3.forceY(function (n) { return n.y; }).strength(0.8));
-
-					/*
-					// add simulation forces to drag other nodes along when a node is moved
-					// (i'm not happy w/ the results of this)
-					simulation.force("edge", d3.forceLink().id(function(d) { return d.id; }).strength(0.1));
-					simulation.force("edge").links(graph.edges);
-					*/
 
 					// setup simulation "tick" function to be called during force simulation
 					simulation.nodes(graph.nodes).on("tick", on_tick);
@@ -193,16 +212,21 @@
 					// callback functoin for d3 force simulations.
 					function on_tick() {
 						// repoint SVG edges to the simulated nodes
-						edge
+						edge.selectAll("line")
 							.attr("x1", function(d) { return d.source.x; })
 							.attr("y1", function(d) { return d.source.y; })
 							.attr("x2", function(d) { return d.target.x; })
 							.attr("y2", function(d) { return d.target.y; });
 
 						// reposition SVG nodes to match simulated nodes
-						node
+						node.selectAll("circle")
 							.attr("cx", function(d) { return d.x; })
 							.attr("cy", function(d) { return d.y; });
+
+						// reposition SVG text to match simulated nodes
+						node.selectAll("text")
+							.attr("x", function (n) { return n.x + (n.size * scale / 2) + 3; })
+							.attr("y", function (n) { return n.y + 4; });
 					}
 
 					var selectedNode = undefined;
