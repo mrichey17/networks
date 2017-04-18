@@ -23,6 +23,12 @@
 				stroke-width: 2px;
 				fill: #c33;
 			}
+
+			.node.neighbor {
+				stroke: #000;
+				stroke-width: 2px;
+				fill: #33c;
+			}
 		</style>
 		<script src="js/jquery-3.2.1.min.js"></script>
 		<script src="js/d3.v4.min.js"></script>
@@ -98,7 +104,7 @@
 
 					var minX = 0, minY = 0, maxX = 0, maxY = 0;
 					var scale = 1;
-					var nodes = {};
+					var nodes = {}, neighbors = {};
 
 					// calculate most negative X/Y coordinates of all nodes
 					graph.nodes.forEach(function (n) {
@@ -121,6 +127,14 @@
 					graph.edges.forEach(function (l) {
 						l.source = nodes[l.source];
 						l.target = nodes[l.target];
+					});
+
+					// calculte node neighbors
+					graph.edges.forEach(function (l) {
+						if (neighbors[l.source.id] === undefined) neighbors[l.source.id] = [];
+						if (neighbors[l.target.id] === undefined) neighbors[l.target.id] = [];
+						if (! neighbors[l.source.id].includes(l.target.id)) neighbors[l.source.id].push(l.target.id);
+						if (! neighbors[l.target.id].includes(l.source.id)) neighbors[l.target.id].push(l.source.id);
 					});
 
 					// add all edges from dataset to SVG
@@ -190,66 +204,83 @@
 							.attr("cx", function(d) { return d.x; })
 							.attr("cy", function(d) { return d.y; });
 					}
+
+					var selectedNode = undefined;
+
+					// callback for clicking on a node
+					function on_node_click(n) {
+						// ignore these events while dragging
+						if (dragging) return;
+
+						// set the node to be "selected " and draw it highlighted
+						selectedNode = n;
+						highlight_node(selectedNode);
+					}
+
+					// callback for mouse entering the region of a node
+					function on_node_mouseenter(n) {
+						// ignore these events while dragging
+						if (dragging) return;
+
+						// highlight the node the mouse is over
+						highlight_node(n);
+					}
+
+					// callback for mouse existing the region of a node
+					function on_node_mouseexit(n) {
+						// ignore these events while dragging
+						if (dragging) return;
+
+						// go back to highlighting the selected (clicked-on) node, if there is one
+						highlight_node(selectedNode);
+					}
+
+					// helper function to set a node's appearance to highlighted
+					function highlight_node(n) {
+						// for all the nodes, they are CSS styled as "active" only if they are the selected node
+						d3.selectAll(".node").classed("active", function (x) { return n === x; });
+						// for all the nodes, they are CSS styled as "neighbor" only if they are neighbors of the selected node
+						d3.selectAll(".node").classed("neighbor", function (x) { return n != undefined && neighbors[n.id].includes(x.id); });
+						// for all the edges, they are CSS styled as "active" if their source or target is the selected node
+						d3.selectAll(".edge").classed("active", function (x) { return x.source === n || x.target === n; });
+					}
+
+					var dragging = false;
+
+					// callback for beginning of node dragging
+					function on_drag_start(d) {
+						// if the simulation is currently steady-state, reactivate it
+						if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+						// set drag force to be toward current mouse location
+						d.fx = d.x;
+						d.fy = d.y;
+						// we are now dragging
+						dragging = true;
+					}
+
+					// callback for ongoing node dragging
+					function on_drag(d) {
+						// set drag force to be toward current mouse location
+						d.fx = d3.event.x;
+						d.fy = d3.event.y;
+					}
+
+					// callback for end of node dragging
+					function on_drag_end(d) {
+						// allow the simulation to return to steady-state
+						if (!d3.event.active) simulation.alphaTarget(0);
+						// remove drag force towards mouse
+						d.fx = null;
+						d.fy = null;
+						// we are no longer dragging
+						dragging = false;
+					}
 				});
 
 				// callback for zoom operations on the SVG image
 				function on_zoom() {
 					// update the SVG element's "transform" to match D3's knowledge of the pan/zoom state
 					svg.attr("transform", d3.event.transform);
-				}
-
-				// callback for beginning of node dragging
-				function on_drag_start(d) {
-					// if the simulation is currently steady-state, reactivate it
-					if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-					// set drag force to be toward current mouse location
-					d.fx = d.x;
-					d.fy = d.y;
-				}
-
-				// callback for ongoing node dragging
-				function on_drag(d) {
-					// set drag force to be toward current mouse location
-					d.fx = d3.event.x;
-					d.fy = d3.event.y;
-				}
-
-				// callback for end of node dragging
-				function on_drag_end(d) {
-					// allow the simulation to return to steady-state
-					if (!d3.event.active) simulation.alphaTarget(0);
-					// remove drag force towards mouse
-					d.fx = null;
-					d.fy = null;
-				}
-
-				var selectedNode = undefined;
-
-				// callback for clicking on a node
-				function on_node_click(n) {
-					// set the node to be "selected " and draw it highlighted
-					selectedNode = n;
-					highlight_node(selectedNode);
-				}
-
-				// callback for mouse entering the region of a node
-				function on_node_mouseenter(n) {
-					// highlight the node the mouse is over
-					highlight_node(n);
-				}
-
-				// callback for mouse existing the region of a node
-				function on_node_mouseexit(n) {
-					// go back to highlighting the selected (clicked-on) node, if there is one
-					highlight_node(selectedNode);
-				}
-
-				// helper function to set a node's appearance to highlighted
-				function highlight_node(n) {
-					// for all the nodes, they are CSS styled as "active" only if they are the selected node
-					d3.selectAll(".node").classed("active", function (x) { return n === x; });
-					// for all the edges, they are CSS styled as "active" if their source or target is the selected node
-					d3.selectAll(".edge").classed("active", function (x) { return x.source === n || x.target === n; });
 				}
 			}
 
