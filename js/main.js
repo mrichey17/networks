@@ -1,9 +1,17 @@
 // TODO: instead of scaling and shifting, set up initial zoom and translate to center it
 // TODO: backgrounds on node labels
 
+var config = {
+  "networks": [
+    { "name": "Client A", "file": "data/client1.json" },
+    { "name": "Client B", "file": "data/client2.json" }
+  ]
+};
+
 var query_string = {};
 
 var network_name = undefined;
+var network_config = undefined;
 var network = undefined;
 var neighbors = {};
 var nodes = {};
@@ -22,7 +30,10 @@ var scale = 1;
 function main() {
   parse_query_string();
   setup_ui();
-  if (config["networks"].includes(network_name)) {
+
+  network_config = config["networks"].find(function (n) { return n["file"] == network_name; });
+
+  if (network_config != undefined) {
     setup_network();
   }
 }
@@ -47,7 +58,7 @@ function parse_query_string() {
 function setup_ui() {
   // populate drop-down menu
   config["networks"].forEach(function (ds) {
-      $("#networks_menu").append(`<a class="item" href="?network=${ds}">${ds}</div>`);
+      $("#networks_menu").append(`<a class="item" href="?network=${ds["file"]}">${ds["name"]}</div>`);
     });
 }
 
@@ -59,7 +70,7 @@ function setup_network() {
     .append("g");
 
   // load the requested network
-  d3.json("data/" + network_name, on_svg_loaded);
+  d3.json(network_config["file"], on_svg_loaded);
 
   // handle callback when svg is loaded
   function on_svg_loaded(error, the_network) {
@@ -134,9 +145,6 @@ function setup_network() {
       .attr("cx", function (n) { return n.x; })
       .attr("cy", function (n) { return n.y; })
       .attr("id", function (n) { return "node-" + n.id; });
-
-    // add titles to each node circle
-    svg_nodes.selectAll("circle").append("title").text(function (d) { return d.label; });
 
     // add labels to each node group
     svg_nodes.append("text")
