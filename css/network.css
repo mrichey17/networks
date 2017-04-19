@@ -1,0 +1,44 @@
+.edge line {
+  stroke: #333;
+  stroke-opacity: 0.8;
+  stroke-width: 0.5px;
+}
+
+.edge.active line {
+  stroke: #c33;
+  stroke-opactiy: 1.0;
+  stroke-width: 2px;
+}
+
+.node circle {
+  stroke: #000;
+  stroke-width: 0px;
+}
+
+.node.active circle {
+  stroke: #000;
+  stroke-width: 2px;
+  fill: #c33;
+}
+
+.node.neighbor circle {
+  stroke: #000;
+  stroke-width: 2px;
+  fill: #33c;
+}
+
+.node text {
+  font-color: #333;
+  font-weight: normal;
+  font-family: sans-serif;
+  font-size: 12px;
+  visibility: hidden;
+}
+
+.node.active text {
+  visibility: visible;
+}
+
+.node.neighbor text {
+  visibility: visible;
+}
