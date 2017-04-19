@@ -6,6 +6,19 @@ body {
   height: 90vh;
   width: 100%;
   overflow-y: hidden;
+  clear: none;
+}
+
+.ui.card {
+   position: fixed;
+   top: 80;
+   right: 40;
+   z-index: 1;
+}
+
+.ui.segment {
+  margin: 20px;
+  padding: 0px;
 }
 
 .edge line {
