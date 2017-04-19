@@ -1,6 +1,7 @@
 // TODO: instead of scaling and shifting, set up initial zoom and translate to center it
 // TODO: backgrounds on node labels
 
+// define available networks
 var config = {
   "networks": [
     { "name": "Client A", "file": "data/client1.json" },
@@ -8,30 +9,35 @@ var config = {
   ]
 };
 
+// the raw query string provided by the web browser
 var query_string = {};
 
-var network_name = undefined;
-var network_config = undefined;
-var network = undefined;
-var neighbors = {};
-var nodes = {};
+// network model
+var network_path = undefined;    // path specified in query_string
+var network_config = undefined;  // config matching the supplied path
+var network = undefined;         // raw, parsed JSON data
+var neighbors = {};              // map from node to list of neighbor IDs
+var nodes = {};                  // map of nodes by ID
 
-var svg = undefined;
-var svg_edges = undefined;
-var svg_nodes = undefined;
+// svg model
+var svg = undefined;             // main SVG tag
+var svg_edges = undefined;       // list of edges
+var svg_nodes = undefined;       // list of nodes
 
+// D3 force simulation
 var simulation = undefined;
 
-var selected_node = undefined;
-var dragging = false;
-var scale = 1;
+// node selection and dragging
+var selected_node = undefined;   // the current selected node
+var dragging = false;            // whether or not dragging is active
+var scale = 1;                   // temporary scaling factor (see TODOs)
 
 // called when the document is loaded
 function main() {
   parse_query_string();
   setup_ui();
 
-  network_config = config["networks"].find(function (n) { return n["file"] == network_name; });
+  network_config = config["networks"].find(function (n) { return n["file"] == network_path; });
 
   if (network_config != undefined) {
     setup_network();
@@ -51,7 +57,7 @@ function parse_query_string() {
   }
 
   // get the name of the requested network (will be undefined if not network was chosen)
-  network_name = query_string["network"];
+  network_path = query_string["network"];
 }
 
 // setup UI
