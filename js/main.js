@@ -1,3 +1,9 @@
+// TODO: instead of scaling and shifting, set up initial zoom and translate to center it
+// TODO: toggle visibility of card based on whehter or not something is selected
+// TODO: toggle contents of card based on neighbors of active node
+// TODO: right sidebar blocks mouse events on svg
+// TODO: split out more sane javascript functions
+
 function main()
 {
   // parse the URL's query parameters into a dictionary
@@ -65,8 +71,6 @@ function main()
       n.x = (n.x - minX) * scale;
       n.y = (n.y - minY) * scale;
     });
-
-    // TODO: instead of scaling and shifting, set up initial zoom and translate to center it
 
     // update graph edges so they directly reference the nodes rather than containing just their names
     graph.edges.forEach(function (l) {
