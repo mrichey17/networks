@@ -14,6 +14,15 @@ body {
    top: 80;
    right: 40;
    z-index: 1;
+   visibility: hidden;
+}
+
+.ui.card.visible {
+   position: fixed;
+   top: 80;
+   right: 40;
+   z-index: 1;
+   visibility: visible;
 }
 
 .ui.segment {

@@ -1,7 +1,4 @@
 // TODO: instead of scaling and shifting, set up initial zoom and translate to center it
-// TODO: toggle visibility of card based on whehter or not something is selected
-// TODO: toggle contents of card based on neighbors of active node
-// TODO: right sidebar blocks mouse events on svg
 // TODO: backgrounds on node labels
 
 var query_string = {};
@@ -267,6 +264,35 @@ function setup_node_selection() {
 
   // helper function to set a node's appearance to highlighted
   function highlight_node(n) {
+    // show/hide card
+    d3.select("#node_card").classed("visible", n != undefined);
+
+    // update card information
+    if (n != undefined) {
+        if (n.label === undefined || n.label.length == 0) {
+          d3.select("#node_card .header").text(`UNNAMED NODE`);
+        } else {
+          d3.select("#node_card .header").text(`${n.label}`);
+        }
+
+        d3.selectAll("#node_card .description p").remove();
+
+        var ns = neighbors[n.id];
+        if (ns === undefined) {
+          d3.select("#node_card .sub.header").text("Neighbors");
+          d3.select("#node_card .description").text("--");
+        } else {
+          d3.select("#node_card .sub.header").text(`Neighbors (${ns.length})`);
+          ns.forEach(function (nn) {
+            if (nodes[nn].label === undefined || nodes[nn].label.length == 0) {
+              $("#node_card .description").append(`<p>UNNAMED NODE</p>`);
+            } else {
+              $("#node_card .description").append(`<p>${nodes[nn].label}</p>`);
+            }
+          });
+        }
+    }
+
     // for all the nodes, they are CSS styled as "active" only if they are the selected node
     d3.selectAll(".node").classed("active", function (x) { return n === x; });
     // for all the nodes, they are CSS styled as "neighbor" only if they are neighbors of the selected node
