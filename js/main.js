@@ -31,7 +31,7 @@ function main()
 
   // from here down we can assume a valid dataset was chosen...
 
-  // make an SVG node to do our rendering in
+  // get svg node and setup zooming callback
   var svg = d3.select("svg")
     .call(d3.zoom().on("zoom", on_zoom))
     .append("g");
@@ -65,6 +65,8 @@ function main()
       n.x = (n.x - minX) * scale;
       n.y = (n.y - minY) * scale;
     });
+
+    // TODO: instead of scaling and shifting, set up initial zoom and translate to center it
 
     // update graph edges so they directly reference the nodes rather than containing just their names
     graph.edges.forEach(function (l) {
