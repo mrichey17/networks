@@ -1,3 +1,3 @@
 var config = {
-  "datasets": ["client1.json", "client2.json"]
+  "networks": ["client1.json", "client2.json"]
 }
