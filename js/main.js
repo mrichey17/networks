@@ -1,5 +1,3 @@
-// TODO: backgrounds on node labels
-
 // define available networks
 var config = {
   "networks": [
@@ -114,6 +112,7 @@ function setup_network() {
     network.nodes.forEach(function (n) {
       n.x = (n.x * scale) + shiftX;
       n.y = (n.y * scale) + shiftY;
+      if (n.label === undefined || n.label.length == 0) n.label = "UNNAMED NODE";
     });
 
     // setup zoom callback
@@ -131,6 +130,17 @@ function setup_network() {
       if (neighbors[l.target.id] === undefined) neighbors[l.target.id] = [];
       if (! neighbors[l.source.id].includes(l.target.id)) neighbors[l.source.id].push(l.target.id);
       if (! neighbors[l.target.id].includes(l.source.id)) neighbors[l.target.id].push(l.source.id);
+    });
+
+    // sort node neighbors by node name
+    Object.keys(neighbors).forEach(function (k) {
+      neighbors[k].sort(function (a, b) {
+        var la = nodes[a].label;
+        var lb = nodes[b].label;
+        if (la > lb) return 1;
+        if (lb > la) return -1;
+        return 0;
+      });
     });
 
     // add all edges from network to SVG
@@ -311,12 +321,7 @@ function setup_node_selection() {
 
     // update card information
     if (n != undefined) {
-        if (n.label === undefined || n.label.length == 0) {
-          d3.select("#node_card .header").text(`UNNAMED NODE`);
-        } else {
-          d3.select("#node_card .header").text(`${n.label}`);
-        }
-
+        d3.select("#node_card .header").text(`${n.label}`);
         d3.selectAll("#node_card .description p").remove();
 
         var ns = neighbors[n.id];
@@ -326,11 +331,7 @@ function setup_node_selection() {
         } else {
           d3.select("#node_card .sub.header").text(`Neighbors (${ns.length})`);
           ns.forEach(function (nn) {
-            if (nodes[nn].label === undefined || nodes[nn].label.length == 0) {
-              $("#node_card .description").append(`<p>UNNAMED NODE</p>`);
-            } else {
-              $("#node_card .description").append(`<p>${nodes[nn].label}</p>`);
-            }
+            $("#node_card .description").append(`<p>${nodes[nn].label}</p>`);
           });
         }
     }
