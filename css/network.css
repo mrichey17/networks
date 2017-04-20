@@ -33,7 +33,7 @@ body {
 .edge line {
   stroke: #333;
   stroke-opacity: 0.8;
-  stroke-width: 0.5px;
+  stroke-width: 2px;
 }
 
 .edge.active line {

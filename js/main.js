@@ -1,4 +1,3 @@
-// TODO: instead of scaling and shifting, set up initial zoom and translate to center it
 // TODO: backgrounds on node labels
 
 // define available networks
@@ -25,6 +24,7 @@ var svg_edges = undefined;       // list of edges
 var svg_nodes = undefined;       // list of nodes
 
 // D3 force simulation
+var zoom = undefined;
 var simulation = undefined;
 
 // node selection and dragging
@@ -70,10 +70,10 @@ function setup_ui() {
 
 // render the network to the SVG and setup all the callbacks
 function setup_network() {
+  zoom = d3.zoom();
+
   // get svg node and setup zooming callback
-  svg = d3.select("svg")
-    .call(d3.zoom().on("zoom", on_svg_zoom))
-    .append("g");
+  svg = d3.select("#viewport");
 
   // load the requested network
   d3.json(network_config["file"], on_svg_loaded);
@@ -97,12 +97,24 @@ function setup_network() {
       if (n.y > maxY) maxY = n.y;
     });
 
-    // move all nodes to positive X/Y network quadrant, and scale to fit in 1024x1024 rectangle
-    network.nodes.forEach(function (n) {
-      scale = Math.min(1024 / (maxX - minX), 1024 / (maxY - minY));
-      n.x = (n.x - minX) * scale;
-      n.y = (n.y - minY) * scale;
-    });
+    // calculate shift and scale to center network in view
+    var width = maxX - minX;
+    var height = maxY - minY;
+    var centerX = minX + (width / 2);
+    var centerY = minY + (height / 2);
+
+    var bounds = d3.select("svg").node().getBoundingClientRect();
+
+    var shiftX = (bounds.width / 2) - centerX;
+    var shiftY = (bounds.height / 2) - centerY;
+
+    // calculate scale to fit network to view
+    scale = Math.min(bounds.width / width, bounds.height / height);
+
+    // set initial pan/zoom and setup zoom callback
+    var transform = d3.zoomIdentity.translate(shiftX, shiftY).scale(scale * 0.9);
+    d3.select("svg").call(zoom).call(zoom.on("zoom", on_svg_zoom));
+    d3.select("svg").call(zoom).call(zoom.transform, transform);
 
     // update network edges so they directly reference the nodes rather than containing just their names
     network.edges.forEach(function (l) {
@@ -129,7 +141,7 @@ function setup_network() {
 
     // add lines to each edge group
     svg_edges.append("line")
-      //.attr("stroke-width", function (l) { return l.size * scale / 2; })
+      // .attr("stroke-width", function (l) { return l.size / scale * 40; })
       .attr("x1", function (l) { return l.source.x; })
       .attr("y1", function (l) { return l.source.y; })
       .attr("x2", function (l) { return l.target.x; })
@@ -146,7 +158,7 @@ function setup_network() {
 
     // add edges to each node group
     svg_nodes.append("circle")
-      .attr("r", function (n) { return n.size * scale / 2; })
+      .attr("r", function (n) { return n.size / scale / 4; })
       .attr("fill", function (n) { return n.color; })
       .attr("cx", function (n) { return n.x; })
       .attr("cy", function (n) { return n.y; })
@@ -166,7 +178,8 @@ function setup_network() {
   // callback for zoom operations on the SVG image
   function on_svg_zoom() {
     // update the SVG element's "transform" to match D3's knowledge of the pan/zoom state
-    svg.attr("transform", d3.event.transform);
+    d3.select("#viewport").attr("transform", d3.zoomTransform(this));
+    // svg.attr("transform", d3.zoomTransform(svg)); // d3.event.transform);
   }
 }
 
