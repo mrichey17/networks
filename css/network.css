@@ -33,13 +33,13 @@ body {
 .edge line {
   stroke: #333;
   stroke-opacity: 0.8;
-  stroke-width: 2px;
+  // stroke-width: 2px;
 }
 
 .edge.active line {
   stroke: #c33;
   stroke-opactiy: 1.0;
-  stroke-width: 2px;
+  // stroke-width: 2px;
 }
 
 .node circle {

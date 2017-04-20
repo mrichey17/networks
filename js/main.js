@@ -3,8 +3,8 @@
 // define available networks
 var config = {
   "networks": [
-    { "name": "Client A", "file": "data/client1.json" },
-    { "name": "Client B", "file": "data/client2.json" }
+    { "name": "Client A", "file": "data/client1.json", "node_scale": 1/16, "edge_scale": 1/2 },
+    { "name": "Client B", "file": "data/client2.json", "node_scale": 1/6, "edge_scale": 1/2 }
   ]
 };
 
@@ -14,6 +14,8 @@ var query_string = {};
 // network model
 var network_path = undefined;    // path specified in query_string
 var network_config = undefined;  // config matching the supplied path
+var node_scale = 1;              // node_scale from network config
+var edge_scale = 1;              // edge_scale from network config
 var network = undefined;         // raw, parsed JSON data
 var neighbors = {};              // map from node to list of neighbor IDs
 var nodes = {};                  // map of nodes by ID
@@ -40,6 +42,9 @@ function main() {
   network_config = config["networks"].find(function (n) { return n["file"] == network_path; });
 
   if (network_config != undefined) {
+    node_scale = network_config["node_scale"];
+    edge_scale = network_config["edge_scale"];
+
     setup_network();
   }
 }
@@ -109,12 +114,16 @@ function setup_network() {
     var shiftY = (bounds.height / 2) - centerY;
 
     // calculate scale to fit network to view
-    scale = Math.min(bounds.width / width, bounds.height / height);
+    scale = Math.min(bounds.width / width, bounds.height / height) * 0.9;
 
-    // set initial pan/zoom and setup zoom callback
-    var transform = d3.zoomIdentity.translate(shiftX, shiftY).scale(scale * 0.9);
+    // update all the nodes positions to center everything
+    network.nodes.forEach(function (n) {
+      n.x = (n.x * scale) + shiftX;
+      n.y = (n.y * scale) + shiftY;
+    });
+
+    // setup zoom callback
     d3.select("svg").call(zoom).call(zoom.on("zoom", on_svg_zoom));
-    d3.select("svg").call(zoom).call(zoom.transform, transform);
 
     // update network edges so they directly reference the nodes rather than containing just their names
     network.edges.forEach(function (l) {
@@ -141,7 +150,7 @@ function setup_network() {
 
     // add lines to each edge group
     svg_edges.append("line")
-      // .attr("stroke-width", function (l) { return l.size / scale * 40; })
+      .attr("stroke-width", function (l) { return l.size * edge_scale; })
       .attr("x1", function (l) { return l.source.x; })
       .attr("y1", function (l) { return l.source.y; })
       .attr("x2", function (l) { return l.target.x; })
@@ -158,7 +167,7 @@ function setup_network() {
 
     // add edges to each node group
     svg_nodes.append("circle")
-      .attr("r", function (n) { return n.size / scale / 4; })
+      .attr("r", function (n) { return n.size * node_scale; })
       .attr("fill", function (n) { return n.color; })
       .attr("cx", function (n) { return n.x; })
       .attr("cy", function (n) { return n.y; })
@@ -167,7 +176,7 @@ function setup_network() {
     // add labels to each node group
     svg_nodes.append("text")
       .text(function (d) { return d.label; })
-      .attr("x", function (n) { return n.x + (n.size * scale / 2) + 3; })
+      .attr("x", function (n) { return n.x + (n.size / 2) + 3; })
       .attr("y", function (n) { return n.y + 4; });
 
     setup_simulation();
