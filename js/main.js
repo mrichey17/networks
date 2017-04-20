@@ -243,10 +243,21 @@ function setup_drag_and_drop() {
 
 // configuration node selection
 function setup_node_selection() {
+  // setup background click callback
+  d3.select("svg").on("click", on_svg_click);
+
+  // setup node callbacks
   d3.selectAll(".node circle")
     .on("click", on_node_click)
     .on("mouseover", on_node_mouseenter)
     .on("mouseout", on_node_mouseexit);
+
+  // callback for clicking on svg background
+  function on_svg_click(n) {
+    // clear selection
+    selected_node = undefined;
+    highlight_node(selected_node);
+  }
 
   // callback for clicking on a node
   function on_node_click(n) {
@@ -256,6 +267,7 @@ function setup_node_selection() {
     // set the node to be "selected " and draw it highlighted
     selected_node = n;
     highlight_node(selected_node);
+    d3.event.stopPropagation();
   }
 
   // callback for mouse entering the region of a node
