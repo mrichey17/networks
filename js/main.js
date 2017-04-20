@@ -16,6 +16,7 @@ var network_path = undefined;    // path specified in query_string
 var network_config = undefined;  // config matching the supplied path
 var node_scale = 1;              // node_scale from network config
 var edge_scale = 1;              // edge_scale from network config
+var scale = 1;
 var network = undefined;         // raw, parsed JSON data
 var neighbors = {};              // map from node to list of neighbor IDs
 var nodes = {};                  // map of nodes by ID
@@ -32,7 +33,6 @@ var simulation = undefined;
 // node selection and dragging
 var selected_node = undefined;   // the current selected node
 var dragging = false;            // whether or not dragging is active
-var scale = 1;                   // temporary scaling factor (see TODOs)
 
 // called when the document is loaded
 function main() {
@@ -105,16 +105,10 @@ function setup_network() {
     // calculate shift and scale to center network in view
     var width = maxX - minX;
     var height = maxY - minY;
-    var centerX = minX + (width / 2);
-    var centerY = minY + (height / 2);
-
     var bounds = d3.select("svg").node().getBoundingClientRect();
-
-    var shiftX = (bounds.width / 2) - centerX;
-    var shiftY = (bounds.height / 2) - centerY;
-
-    // calculate scale to fit network to view
-    scale = Math.min(bounds.width / width, bounds.height / height) * 0.9;
+    var shiftX = bounds.width / 2;
+    var shiftY = bounds.height / 2;
+    scale = Math.min(bounds.width / maxX, bounds.width / -minX, bounds.height / -minY, bounds.height / maxY) * 0.45;
 
     // update all the nodes positions to center everything
     network.nodes.forEach(function (n) {
@@ -220,7 +214,7 @@ function setup_simulation() {
 
     // reposition SVG text to match simulated nodes
     svg_nodes.selectAll("text")
-      .attr("x", function (n) { return n.x + (n.size * scale / 2) + 3; })
+      .attr("x", function (n) { return n.x + (n.size * node_scale / 2) + 3; })
       .attr("y", function (n) { return n.y + 4; });
   }
 }
