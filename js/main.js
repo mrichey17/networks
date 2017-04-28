@@ -156,7 +156,7 @@ function setup_network() {
 
     // add lines to each edge group
     svg_edges.append("line")
-      .attr("stroke-width", function (l) { return l.size * edge_scale; })
+      .attr("stroke-width", function (l) { return Math.sqrt(l.size) * edge_scale; })
       .attr("x1", function (l) { return l.source.x; })
       .attr("y1", function (l) { return l.source.y; })
       .attr("x2", function (l) { return l.target.x; })
@@ -173,7 +173,7 @@ function setup_network() {
 
     // add edges to each node group
     svg_nodes.append("circle")
-      .attr("r", function (n) { return n.size * node_scale; })
+      .attr("r", function (n) { return Math.sqrt(n.size) * node_scale; })
       .attr("fill", function (n) { return n.color; })
       .attr("cx", function (n) { return n.x; })
       .attr("cy", function (n) { return n.y; })
