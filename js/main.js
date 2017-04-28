@@ -342,7 +342,11 @@ function setup_node_selection() {
     d3.selectAll(".node").classed("active", function (x) { return n === x; });
     // for all the nodes, they are CSS styled as "neighbor" only if they are neighbors of the selected node
     d3.selectAll(".node").classed("neighbor", function (x) { return n != undefined && neighbors[n.id].includes(x.id); });
+    // for all the nodes, they are CSS styled as "inactive" only if they are neither active nor the a neighbor
+    d3.selectAll(".node").classed("inactive", function (x) { return n != undefined && n != x && !neighbors[n.id].includes(x.id); });
     // for all the edges, they are CSS styled as "active" if their source or target is the selected node
     d3.selectAll(".edge").classed("active", function (x) { return x.source === n || x.target === n; });
+    // for all the edges, they are CSS styled as "active" if their source or target is the selected node
+    d3.selectAll(".edge").classed("inactive", function (x) { return n != undefined && x.source != n && x.target != n; });
   }
 }
