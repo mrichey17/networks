@@ -1,9 +1,7 @@
 // define available networks
 var config = {
   "networks": [
-    { "name": "Happiness", "file": "data/Happiness.json", "node_scale": 1, "edge_scale": 1 },
     { "name": "SURF", "file": "data/SURF.json", "node_scale": 1, "edge_scale": 1/4 },
-    { "name": "University Publications", "file": "data/Publications.json", "node_scale": 1/2, "edge_scale": 1/2 },
     { "name": "Circular Sample", "file": "data/Sample.json", "node_scale": 1, "edge_scale": 1/2 }
   ]
 };
