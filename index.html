@@ -1,14 +1,49 @@
 <html>
 	<head>
+		<link rel="stylesheet" type="text/css" href="js/semantic/semantic.css">
+		<link rel="stylesheet" type="text/css" href="css/network.css">
+		<script src="js/jquery/jquery-3.2.1.min.js"></script>
+		<script src="js/semantic/semantic.min.js"></script>
+		<script src="js/d3/d3.v4.min.js"></script>
+		<script src="js/d3/d3-color.v1.min.js"></script>
+		<script src="js/d3/d3-dispatch.v1.min.js"></script>
+		<script src="js/d3/d3-ease.v1.min.js"></script>
+		<script src="js/d3/d3-interpolate.v1.min.js"></script>
+		<script src="js/d3/d3-selection.v1.min.js"></script>
+		<script src="js/d3/d3-timer.v1.min.js"></script>
+		<script src="js/d3/d3-transition.v1.min.js"></script>
+		<script src="js/d3/d3-drag.v1.min.js"></script>
+		<script src="js/d3/d3-zoom.v1.min.js"></script>
+		<script src="js/main.js"></script>
 	</head>
-	<body>
-		Clients:
-		<ul>
-		<li><a href="client1/">Client #1</a>
-		<li><a href="client2/">Client #2</a>
-		<li><a href="client3/">Client #3</a>
-		<li><a href="client4/">Client #4</a>
- 		<li><a href="stillStealth/">stillStealth</a>
-</ul>
+	<body onload="main()">
+		<div class="ui top menu">
+			<div class="header item">
+				Network Visualizer
+			</div>
+			<div class="right menu">
+				<div class="ui dropdown simple item">
+					<span class="text">Select Network</span>
+					<i class="dropdown icon"></i>
+					<div class="menu" id="networks_menu">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="ui segment">
+			<div class="ui card" id="node_card">
+				<div class="header">Node Name</div>
+				<div class="content">
+					<h4 class="ui sub header">Neighbors</h4>
+					<div class="description">
+						<p>Neighbor #1</p>
+						<p>Neighbor #2</p>
+						<p>Neighbor #3</p>
+						<p>Neighbor #4</p>
+					</div>
+				</div>
+			</div>
+  		<svg class="network"><g id="viewport"></g><svg>
+		</div>
 	</body>
 </html>

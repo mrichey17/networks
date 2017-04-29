@@ -1,0 +1,74 @@
+body {
+  overflow-y: hidden;
+}
+
+.network {
+  height: 90vh;
+  width: 100%;
+  overflow-y: hidden;
+  clear: none;
+}
+
+.ui.card {
+   position: fixed;
+   top: 80;
+   right: 40;
+   z-index: 1;
+   visibility: hidden;
+}
+
+.ui.card.visible {
+   position: fixed;
+   top: 80;
+   right: 40;
+   z-index: 1;
+   visibility: visible;
+}
+
+.ui.segment {
+  margin: 20px;
+  padding: 0px;
+}
+
+.edge line {
+  stroke: #333;
+  stroke-opacity: 0.8;
+}
+
+.edge.active line {
+  stroke-opacity: 1.0;
+}
+
+.edge.inactive line {
+  stroke-opacity: 0.2;
+}
+
+.node circle {
+}
+
+.node.active circle {
+}
+
+.node.inactive circle {
+  stroke-opacity: 0.4;
+  fill-opacity: 0.4;
+}
+
+.node.neighbor circle {
+}
+
+.node text {
+  font-color: #333;
+  font-weight: normal;
+  font-family: sans-serif;
+  font-size: 12px;
+  visibility: hidden;
+}
+
+.node.active text {
+  /* visibility: visible; */
+}
+
+.node.neighbor text {
+  /* visibility: visible; */
+}
