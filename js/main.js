@@ -2,7 +2,7 @@
 var config = {
   "networks": [
     { "name": "SURF", "file": "data/SURF.json", "node_scale": 1, "edge_scale": 1/4 },
-    { "name": "Circular Sample", "file": "data/Sample.json", "node_scale": 1, "edge_scale": 1/2 }
+    { "name": "G2 Customer vs OFAC - circle", "file": "data/Sample.json", "node_scale": 1, "edge_scale": 1/2 }
   ]
 };
 
