@@ -3,8 +3,8 @@ var config = {
   "networks": [
    
     { "name": "G2 Customer vs OFAC - circle", "file": "data/Sample.json", "node_scale": 1, "edge_scale": 1/2 },
-    { "name": "SURF Egos & Connections - handles", "file": "data/surf1.json", "node_scale": 1, "edge_scale": 1/12 },
-    { "name": "SURF Egos & Connections - names", "file": "data/surf2.json", "node_scale": 1, "edge_scale": 1/12 }
+    { "name": "SURF Egos & Connections", "file": "data/surf1.json", "node_scale": 1, "edge_scale": 1/12 },
+    { "name": "SURF Egos & Connections 2", "file": "data/surf2.json", "node_scale": 1, "edge_scale": 1/12 }
   ]
 };
 
