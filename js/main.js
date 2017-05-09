@@ -92,7 +92,7 @@ function setup_network() {
     network = the_network;
 
     // node bounds
-    var minX = 0, minY = 0, maxX = 0, maxY = 0;
+    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
 
     // calculate most negative X/Y coordinates of all nodes
     network.nodes.forEach(function (n) {
@@ -110,12 +110,20 @@ function setup_network() {
     var bounds = d3.select("svg").node().getBoundingClientRect();
     var shiftX = bounds.width / 2;
     var shiftY = bounds.height / 2;
+    var middleX = minX + (width / 2);
+    var middleY = minY + (height / 2);
+
+    maxX = maxX - middleX;
+    maxY = maxY - middleY;
+    minX = minX - middleX;
+    minY = minY - middleY;
+
     scale = Math.min(bounds.width / maxX, bounds.width / -minX, bounds.height / -minY, bounds.height / maxY) * 0.45;
 
     // update all the nodes positions to center everything
     network.nodes.forEach(function (n) {
-      n.x = (n.x * scale) + shiftX;
-      n.y = (n.y * scale) + shiftY;
+      n.x = ((n.x - middleX) * scale) + shiftX;
+      n.y = ((n.y - middleY) * scale) + shiftY;
       if (n.label === undefined || n.label.length == 0) n.label = "UNNAMED NODE";
     });
 
