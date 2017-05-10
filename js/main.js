@@ -219,6 +219,9 @@ function setup_simulation() {
   // setup simulation "tick" function to be called during force simulation
   simulation.nodes(network.nodes).on("tick", on_simulation_tick);
 
+  // everything is already in the right place, so need to simulate now
+  simulation.stop();
+
   // callback functoin for d3 force simulations.
   function on_simulation_tick() {
     // repoint SVG edges to the simulated nodes
