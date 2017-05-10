@@ -204,7 +204,6 @@ function setup_network() {
   function on_svg_zoom() {
     // update the SVG element's "transform" to match D3's knowledge of the pan/zoom state
     d3.select("#viewport").attr("transform", d3.zoomTransform(this));
-    // svg.attr("transform", d3.zoomTransform(svg)); // d3.event.transform);
   }
 }
 
