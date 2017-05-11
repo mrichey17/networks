@@ -131,7 +131,17 @@ function setup_network() {
     minX = minX - middleX;
     minY = minY - middleY;
 
-    scale = Math.min(bounds.width / maxX, bounds.width / -minX, bounds.height / -minY, bounds.height / maxY) * 0.45;
+    var possibleScaleTerms = [];
+    if (maxX != 0) possibleScaleTerms.push(bounds.width / Math.abs(maxX));
+    if (minX != 0) possibleScaleTerms.push(bounds.width / Math.abs(minX));
+    if (maxY != 0) possibleScaleTerms.push(bounds.height / Math.abs(maxY));
+    if (minY != 0) possibleScaleTerms.push(bounds.height / Math.abs(minY));
+
+    if (possibleScaleTerms.length == 0) {
+      scale = 0.45;
+    } else {
+      scale = Math.min.apply(null, possibleScaleTerms) * 0.45;
+    }
 
     // update all the nodes positions to center everything
     network.nodes.forEach(function (n) {
