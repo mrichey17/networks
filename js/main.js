@@ -259,9 +259,7 @@ function setup_simulation() {
   function on_simulation_tick() {
     // repoint SVG edges to the simulated nodes
     svg_edges.selectAll("line")
-      .attr("x1", function(e) { return e.source.x; })
-      .attr("y1", function(e) { return e.source.y; })
-      .attr("x2", function(e) {
+      .each(function (e) {
         var dx = e.target.x - e.source.x;
         var dy = e.target.y - e.source.y;
         var d = Math.sqrt(dx*dx + dy*dy);
@@ -269,17 +267,11 @@ function setup_simulation() {
         if (d != 0) {
           s = 1 - ((Math.sqrt(e.target.size) * node_scale + (arrow_height * e.width)) / d);
         }
-        return e.source.x + (dx * s);
-      })
-      .attr("y2", function(e) {
-        var dx = e.target.x - e.source.x;
-        var dy = e.target.y - e.source.y;
-        var d = Math.sqrt(dx*dx + dy*dy);
-        var s = 1;
-        if (d != 0) {
-          s = 1 - ((Math.sqrt(e.target.size) * node_scale + (arrow_height * e.width)) / d);
-        }
-        return e.source.y + (dy * s);
+        d3.select(this)
+          .attr("x1", e.source.x)
+          .attr("y1", e.source.y)
+          .attr("x2", e.source.x + (dx * s))
+          .attr("y2", e.source.y + (dy * s));
       });
 
     // reposition SVG nodes to match simulated nodes
