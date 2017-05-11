@@ -218,17 +218,11 @@ function setup_network() {
 
     // add edges to each node group
     svg_nodes.append("circle")
-      .attr("r", function (n) { return Math.sqrt(n.size) * node_scale; })
+      .attr("r", function (n) { return n.radius; })
       .attr("fill", function (n) { return n.color; })
       .attr("cx", function (n) { return n.x; })
       .attr("cy", function (n) { return n.y; })
       .attr("id", function (n) { return "node-" + n.id; });
-
-    // add labels to each node group
-    svg_nodes.append("text")
-      .text(function (d) { return d.label; })
-      .attr("x", function (n) { return n.x + (n.size / 2) + 3; })
-      .attr("y", function (n) { return n.y + 4; });
 
     setup_simulation();
     setup_drag_and_drop();
@@ -286,11 +280,6 @@ function setup_simulation() {
     svg_nodes.selectAll("circle")
       .attr("cx", function(d) { return d.x; })
       .attr("cy", function(d) { return d.y; });
-
-    // reposition SVG text to match simulated nodes
-    svg_nodes.selectAll("text")
-      .attr("x", function (n) { return n.x + (n.size * node_scale / 2) + 3; })
-      .attr("y", function (n) { return n.y + 4; });
   }
 }
 
