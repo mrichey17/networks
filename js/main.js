@@ -79,8 +79,21 @@ function setup_ui() {
 function setup_network() {
   zoom = d3.zoom();
 
-  // get svg node and setup zooming callback
+  // get svg node
   svg = d3.select("#viewport");
+
+  // setup edge markers
+  svg.append("svg:defs").selectAll("marker")
+    .data(["relates"])
+    .enter().append("svg:marker")
+    .attr("id", String)
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 9)
+    .attr("markerWidth", 6)
+    .attr("markerHeight", 6)
+    .attr("orient", "auto")
+    .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
 
   // load the requested network
   d3.json(network_config["file"], on_svg_loaded);
@@ -127,13 +140,24 @@ function setup_network() {
       if (n.label === undefined || n.label.length == 0) n.label = "UNNAMED NODE";
     });
 
+    // pre-calculate node radii
+    network.nodes.forEach(function (n) {
+      n.radius = Math.sqrt(n.size) * node_scale;
+    });
+
     // setup zoom callback
     d3.select("svg").call(zoom).call(zoom.on("zoom", on_svg_zoom));
 
     // update network edges so they directly reference the nodes rather than containing just their names
-    network.edges.forEach(function (l) {
-      l.source = nodes[l.source];
-      l.target = nodes[l.target];
+    network.edges.forEach(function (e) {
+      e.source = nodes[e.source];
+      e.target = nodes[e.target];
+      e.width = Math.sqrt(e.size) * edge_scale;
+    });
+
+    // pre-calculate edge widths
+    network.edges.forEach(function (e) {
+      e.width = Math.sqrt(e.size) * edge_scale;
     });
 
     // calculte node neighbors
@@ -166,11 +190,12 @@ function setup_network() {
 
     // add lines to each edge group
     svg_edges.append("line")
-      .attr("stroke-width", function (l) { return Math.sqrt(l.size) * edge_scale; })
-      .attr("x1", function (l) { return l.source.x; })
-      .attr("y1", function (l) { return l.source.y; })
-      .attr("x2", function (l) { return l.target.x; })
-      .attr("y2", function (l) { return l.target.y; });
+      .attr("stroke-width", function (e) { return e.width; })
+      .attr("x1", function (e) { return e.source.x; })
+      .attr("y1", function (e) { return e.source.y; })
+      .attr("x2", function (e) { return e.target.x; })
+      .attr("y2", function (e) { return e.target.y; })
+      .attr("marker-end", function (e) { return "url(#relates)"; });
 
     // add all nodes from network to SVG
     svg_nodes = svg.append("g")
@@ -226,10 +251,26 @@ function setup_simulation() {
   function on_simulation_tick() {
     // repoint SVG edges to the simulated nodes
     svg_edges.selectAll("line")
-      .attr("x1", function(d) { return d.source.x; })
-      .attr("y1", function(d) { return d.source.y; })
-      .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; });
+      .attr("x1", function(e) { return e.source.x; })
+      .attr("y1", function(e) { return e.source.y; })
+      .attr("x2", function(e) {
+        var dx = e.target.x - e.source.x;
+        var dy = e.target.y - e.source.y;
+        var d = Math.sqrt(dx*dx + dy*dy);
+        var s = 1 - (Math.sqrt(e.target.size) * node_scale / d);
+        var dx2 = dx * s;
+        var dy2 = dy * s;
+        return e.source.x + dx2;
+      })
+      .attr("y2", function(e) {
+        var dx = e.target.x - e.source.x;
+        var dy = e.target.y - e.source.y;
+        var d = Math.sqrt(dx*dx + dy*dy);
+        var s = 1 - (Math.sqrt(e.target.size) * node_scale / d);
+        var dx2 = dx * s;
+        var dy2 = dy * s;
+        return e.source.y + dy2;
+      });
 
     // reposition SVG nodes to match simulated nodes
     svg_nodes.selectAll("circle")
