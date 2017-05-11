@@ -27,6 +27,8 @@ var nodes = {};                  // map of nodes by ID
 var svg = undefined;             // main SVG tag
 var svg_edges = undefined;       // list of edges
 var svg_nodes = undefined;       // list of nodes
+var arrow_width = 8;             // width of edge arrow
+var arrow_height = 6;            // length of edge arrow
 
 // D3 force simulation
 var zoom = undefined;
@@ -87,13 +89,14 @@ function setup_network() {
     .data(["relates"])
     .enter().append("svg:marker")
     .attr("id", String)
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 9)
-    .attr("markerWidth", 6)
-    .attr("markerHeight", 6)
+    .attr("viewBox", "0 0 10 10")
+    .attr("refX", 0)
+    .attr("refY", 5)
+    .attr("markerWidth", arrow_width)
+    .attr("markerHeight", arrow_height)
     .attr("orient", "auto")
     .append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5");
+    .attr("d", "M 0 0 L 10 5 L 0 10 z");
 
   // load the requested network
   d3.json(network_config["file"], on_svg_loaded);
@@ -250,6 +253,7 @@ function setup_simulation() {
 
   // everything is already in the right place, so need to simulate now
   simulation.stop();
+  on_simulation_tick();
 
   // callback functoin for d3 force simulations.
   function on_simulation_tick() {
@@ -261,19 +265,21 @@ function setup_simulation() {
         var dx = e.target.x - e.source.x;
         var dy = e.target.y - e.source.y;
         var d = Math.sqrt(dx*dx + dy*dy);
-        var s = 1 - (Math.sqrt(e.target.size) * node_scale / d);
-        var dx2 = dx * s;
-        var dy2 = dy * s;
-        return e.source.x + dx2;
+        var s = 1;
+        if (d != 0) {
+          s = 1 - ((Math.sqrt(e.target.size) * node_scale + (arrow_height * e.width)) / d);
+        }
+        return e.source.x + (dx * s);
       })
       .attr("y2", function(e) {
         var dx = e.target.x - e.source.x;
         var dy = e.target.y - e.source.y;
         var d = Math.sqrt(dx*dx + dy*dy);
-        var s = 1 - (Math.sqrt(e.target.size) * node_scale / d);
-        var dx2 = dx * s;
-        var dy2 = dy * s;
-        return e.source.y + dy2;
+        var s = 1;
+        if (d != 0) {
+          s = 1 - ((Math.sqrt(e.target.size) * node_scale + (arrow_height * e.width)) / d);
+        }
+        return e.source.y + (dy * s);
       });
 
     // reposition SVG nodes to match simulated nodes
