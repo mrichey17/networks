@@ -33,6 +33,9 @@ var arrow_height = 6;            // length of edge arrow
 // D3 force simulation
 var zoom = undefined;
 var simulation = undefined;
+var node_edges = {};
+var simulation_target_node = undefined;
+var simulation_target_svg = undefined;
 
 // node selection and dragging
 var selected_node = undefined;   // the current selected node
@@ -204,11 +207,14 @@ function setup_network() {
     // add lines to each edge group
     svg_edges.append("line")
       .attr("stroke-width", function (e) { return e.width; })
-      .attr("x1", function (e) { return e.source.x; })
-      .attr("y1", function (e) { return e.source.y; })
-      .attr("x2", function (e) { return e.target.x; })
-      .attr("y2", function (e) { return e.target.y; })
-      .attr("marker-end", function (e) { return "url(#relates)"; });
+      .attr("marker-end", function (e) { return "url(#relates)"; })
+      .each(set_edge_coords)
+      .each(function (e) {
+        if (node_edges[e.source.id] == undefined) node_edges[e.source.id] = [];
+        if (node_edges[e.target.id] == undefined) node_edges[e.target.id] = [];
+        node_edges[e.source.id].push(this);
+        node_edges[e.target.id].push(this);
+      });
 
     // add all nodes from network to SVG
     svg_nodes = svg.append("g")
@@ -223,9 +229,8 @@ function setup_network() {
     svg_nodes.append("circle")
       .attr("r", function (n) { return n.radius; })
       .attr("fill", function (n) { return n.color; })
-      .attr("cx", function (n) { return n.x; })
-      .attr("cy", function (n) { return n.y; })
-      .attr("id", function (n) { return "node-" + n.id; });
+      .attr("id", function (n) { return "node-" + n.id; })
+      .each(set_node_coords);
 
     setup_simulation();
     setup_drag_and_drop();
@@ -253,32 +258,44 @@ function setup_simulation() {
 
   // everything is already in the right place, so need to simulate now
   simulation.stop();
-  on_simulation_tick();
 
   // callback functoin for d3 force simulations.
   function on_simulation_tick() {
-    // repoint SVG edges to the simulated nodes
-    svg_edges.selectAll("line")
-      .each(function (e) {
-        var dx = e.target.x - e.source.x;
-        var dy = e.target.y - e.source.y;
-        var d = Math.sqrt(dx*dx + dy*dy);
-        var s = 1;
-        if (d != 0) {
-          s = 1 - ((Math.sqrt(e.target.size) * node_scale + (arrow_height * e.width)) / d);
-        }
-        d3.select(this)
-          .attr("x1", e.source.x)
-          .attr("y1", e.source.y)
-          .attr("x2", e.source.x + (dx * s))
-          .attr("y2", e.source.y + (dy * s));
-      });
+    // reposition edges to match simulation
+    node_edges[simulation_target_node.id].forEach(function (e) {
+      d3.select(e).each(set_edge_coords);
+    });
 
-    // reposition SVG nodes to match simulated nodes
-    svg_nodes.selectAll("circle")
-      .attr("cx", function(d) { return d.x; })
-      .attr("cy", function(d) { return d.y; });
+    // reposition node to match simulation
+    d3.select(simulation_target_svg).each(set_node_coords);
   }
+}
+
+// helper function to set SVG coords to match JSON data
+function set_node_coords(n) {
+  d3.select(this)
+    .attr("cx", function(d) { return d.x; })
+    .attr("cy", function(d) { return d.y; });
+}
+
+// helper function to set SVG coords to match JSON data
+function set_edge_coords(e) {
+  // calculate line coordinates to make room for arrow
+  var dx = e.target.x - e.source.x;
+  var dy = e.target.y - e.source.y;
+  var d = Math.sqrt(dx*dx + dy*dy);
+  var s = 1;
+  if (d != 0) {
+    s = 1 - ((Math.sqrt(e.target.size) * node_scale + (arrow_height * e.width)) / d);
+  }
+  var x2 = e.source.x + (dx * s);
+  var y2 = e.source.y + (dy * s);
+  // set the final coords
+  d3.select(this)
+    .attr("x1", e.source.x)
+    .attr("y1", e.source.y)
+    .attr("x2", x2)
+    .attr("y2", y2);
 }
 
 // configuration DnD of nodes
@@ -291,6 +308,9 @@ function setup_drag_and_drop() {
 
   // callback for beginning of node dragging
   function on_drag_start(d) {
+    // record simulation target
+    simulation_target_svg = this;
+    simulation_target_node = d;
     // if the simulation is currently steady-state, reactivate it
     if (!d3.event.active) simulation.alphaTarget(0.3).restart();
     // set drag force to be toward current mouse location
