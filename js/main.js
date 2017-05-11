@@ -254,7 +254,7 @@ function setup_simulation() {
   simulation.force("y", d3.forceY(function (n) { return n.y; }).strength(0.8));
 
   // setup simulation "tick" function to be called during force simulation
-  simulation.nodes(network.nodes).on("tick", on_simulation_tick);
+  simulation.nodes([]).on("tick", on_simulation_tick);
 
   // everything is already in the right place, so need to simulate now
   simulation.stop();
@@ -311,11 +311,15 @@ function setup_drag_and_drop() {
     // record simulation target
     simulation_target_svg = this;
     simulation_target_node = d;
-    // if the simulation is currently steady-state, reactivate it
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+
+    // start the simulation, focused on the current node
+    simulation.nodes([d]);
+    simulation.alphaTarget(0.3).restart();
+
     // set drag force to be toward current mouse location
     d.fx = d.x;
     d.fy = d.y;
+
     // we are now dragging
     dragging = true;
   }
