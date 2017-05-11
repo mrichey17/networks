@@ -1,0 +1,12 @@
+{
+  "nodes": [
+    {"label":"A","x":-86,"y":-50,"id":"A","attributes":{},"color":"rgb(255,0,0)","size":400},
+    {"label":"B","x":86,"y":-50,"id":"B","attributes":{},"color":"rgb(0,255,0)","size":900},
+    {"label":"C","x":0,"y":100,"id":"C","attributes":{},"color":"rgb(0,255,255)","size":1300}
+  ],
+  "edges": [
+    {"source":"A","target":"B","id":"E1","attributes":{},"color":"rgb(0,0,0)","size":40.0},
+    {"source":"B","target":"C","id":"E2","attributes":{},"color":"rgb(0,0,0)","size":10.0},
+    {"source":"C","target":"A","id":"E3","attributes":{},"color":"rgb(0,0,0)","size":80.0}
+  ]
+}
