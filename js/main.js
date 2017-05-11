@@ -1,7 +1,7 @@
 // define available networks
 var config = {
   "networks": [
-   
+    { "name": "Trivial", "file": "data/trivial.json", "node_scale": 1, "edge_scale": 1 },
     { "name": "G2 Customer vs OFAC - circle", "file": "data/Sample.json", "node_scale": 1, "edge_scale": 1/2 },
     { "name": "SURF Egos & Connections 1", "file": "data/surf1.json", "node_scale": 2, "edge_scale": 1/12 },
     { "name": "SURF Egos & Connections 2", "file": "data/surf2.json", "node_scale": 2, "edge_scale": 1/12 },
@@ -27,10 +27,15 @@ var nodes = {};                  // map of nodes by ID
 var svg = undefined;             // main SVG tag
 var svg_edges = undefined;       // list of edges
 var svg_nodes = undefined;       // list of nodes
+var arrow_width = 8;             // width of edge arrow
+var arrow_height = 6;            // length of edge arrow
 
 // D3 force simulation
 var zoom = undefined;
 var simulation = undefined;
+var node_edges = {};
+var simulation_target_node = undefined;
+var simulation_target_svg = undefined;
 
 // node selection and dragging
 var selected_node = undefined;   // the current selected node
@@ -79,8 +84,22 @@ function setup_ui() {
 function setup_network() {
   zoom = d3.zoom();
 
-  // get svg node and setup zooming callback
+  // get svg node
   svg = d3.select("#viewport");
+
+  // setup edge markers
+  svg.append("svg:defs").selectAll("marker")
+    .data(["relates"])
+    .enter().append("svg:marker")
+    .attr("id", String)
+    .attr("viewBox", "0 0 10 10")
+    .attr("refX", 0)
+    .attr("refY", 5)
+    .attr("markerWidth", arrow_width)
+    .attr("markerHeight", arrow_height)
+    .attr("orient", "auto")
+    .append("svg:path")
+    .attr("d", "M 0 0 L 10 5 L 0 10 z");
 
   // load the requested network
   d3.json(network_config["file"], on_svg_loaded);
@@ -118,7 +137,17 @@ function setup_network() {
     minX = minX - middleX;
     minY = minY - middleY;
 
-    scale = Math.min(bounds.width / maxX, bounds.width / -minX, bounds.height / -minY, bounds.height / maxY) * 0.45;
+    var possibleScaleTerms = [];
+    if (maxX != 0) possibleScaleTerms.push(bounds.width / Math.abs(maxX));
+    if (minX != 0) possibleScaleTerms.push(bounds.width / Math.abs(minX));
+    if (maxY != 0) possibleScaleTerms.push(bounds.height / Math.abs(maxY));
+    if (minY != 0) possibleScaleTerms.push(bounds.height / Math.abs(minY));
+
+    if (possibleScaleTerms.length == 0) {
+      scale = 0.45;
+    } else {
+      scale = Math.min.apply(null, possibleScaleTerms) * 0.45;
+    }
 
     // update all the nodes positions to center everything
     network.nodes.forEach(function (n) {
@@ -127,13 +156,24 @@ function setup_network() {
       if (n.label === undefined || n.label.length == 0) n.label = "UNNAMED NODE";
     });
 
+    // pre-calculate node radii
+    network.nodes.forEach(function (n) {
+      n.radius = Math.sqrt(n.size) * node_scale;
+    });
+
     // setup zoom callback
     d3.select("svg").call(zoom).call(zoom.on("zoom", on_svg_zoom));
 
     // update network edges so they directly reference the nodes rather than containing just their names
-    network.edges.forEach(function (l) {
-      l.source = nodes[l.source];
-      l.target = nodes[l.target];
+    network.edges.forEach(function (e) {
+      e.source = nodes[e.source];
+      e.target = nodes[e.target];
+      e.width = Math.sqrt(e.size) * edge_scale;
+    });
+
+    // pre-calculate edge widths
+    network.edges.forEach(function (e) {
+      e.width = Math.sqrt(e.size) * edge_scale;
     });
 
     // calculte node neighbors
@@ -166,11 +206,15 @@ function setup_network() {
 
     // add lines to each edge group
     svg_edges.append("line")
-      .attr("stroke-width", function (l) { return Math.sqrt(l.size) * edge_scale; })
-      .attr("x1", function (l) { return l.source.x; })
-      .attr("y1", function (l) { return l.source.y; })
-      .attr("x2", function (l) { return l.target.x; })
-      .attr("y2", function (l) { return l.target.y; });
+      .attr("stroke-width", function (e) { return e.width; })
+      .attr("marker-end", function (e) { return "url(#relates)"; })
+      .each(set_edge_coords)
+      .each(function (e) {
+        if (node_edges[e.source.id] == undefined) node_edges[e.source.id] = [];
+        if (node_edges[e.target.id] == undefined) node_edges[e.target.id] = [];
+        node_edges[e.source.id].push(this);
+        node_edges[e.target.id].push(this);
+      });
 
     // add all nodes from network to SVG
     svg_nodes = svg.append("g")
@@ -183,17 +227,10 @@ function setup_network() {
 
     // add edges to each node group
     svg_nodes.append("circle")
-      .attr("r", function (n) { return Math.sqrt(n.size) * node_scale; })
+      .attr("r", function (n) { return n.radius; })
       .attr("fill", function (n) { return n.color; })
-      .attr("cx", function (n) { return n.x; })
-      .attr("cy", function (n) { return n.y; })
-      .attr("id", function (n) { return "node-" + n.id; });
-
-    // add labels to each node group
-    svg_nodes.append("text")
-      .text(function (d) { return d.label; })
-      .attr("x", function (n) { return n.x + (n.size / 2) + 3; })
-      .attr("y", function (n) { return n.y + 4; });
+      .attr("id", function (n) { return "node-" + n.id; })
+      .each(set_node_coords);
 
     setup_simulation();
     setup_drag_and_drop();
@@ -204,7 +241,6 @@ function setup_network() {
   function on_svg_zoom() {
     // update the SVG element's "transform" to match D3's knowledge of the pan/zoom state
     d3.select("#viewport").attr("transform", d3.zoomTransform(this));
-    // svg.attr("transform", d3.zoomTransform(svg)); // d3.event.transform);
   }
 }
 
@@ -218,27 +254,48 @@ function setup_simulation() {
   simulation.force("y", d3.forceY(function (n) { return n.y; }).strength(0.8));
 
   // setup simulation "tick" function to be called during force simulation
-  simulation.nodes(network.nodes).on("tick", on_simulation_tick);
+  simulation.nodes([]).on("tick", on_simulation_tick);
+
+  // everything is already in the right place, so need to simulate now
+  simulation.stop();
 
   // callback functoin for d3 force simulations.
   function on_simulation_tick() {
-    // repoint SVG edges to the simulated nodes
-    svg_edges.selectAll("line")
-      .attr("x1", function(d) { return d.source.x; })
-      .attr("y1", function(d) { return d.source.y; })
-      .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; });
+    // reposition edges to match simulation
+    node_edges[simulation_target_node.id].forEach(function (e) {
+      d3.select(e).each(set_edge_coords);
+    });
 
-    // reposition SVG nodes to match simulated nodes
-    svg_nodes.selectAll("circle")
-      .attr("cx", function(d) { return d.x; })
-      .attr("cy", function(d) { return d.y; });
-
-    // reposition SVG text to match simulated nodes
-    svg_nodes.selectAll("text")
-      .attr("x", function (n) { return n.x + (n.size * node_scale / 2) + 3; })
-      .attr("y", function (n) { return n.y + 4; });
+    // reposition node to match simulation
+    d3.select(simulation_target_svg).each(set_node_coords);
   }
+}
+
+// helper function to set SVG coords to match JSON data
+function set_node_coords(n) {
+  d3.select(this)
+    .attr("cx", function(d) { return d.x; })
+    .attr("cy", function(d) { return d.y; });
+}
+
+// helper function to set SVG coords to match JSON data
+function set_edge_coords(e) {
+  // calculate line coordinates to make room for arrow
+  var dx = e.target.x - e.source.x;
+  var dy = e.target.y - e.source.y;
+  var d = Math.sqrt(dx*dx + dy*dy);
+  var s = 1;
+  if (d != 0) {
+    s = 1 - ((Math.sqrt(e.target.size) * node_scale + (arrow_height * e.width)) / d);
+  }
+  var x2 = e.source.x + (dx * s);
+  var y2 = e.source.y + (dy * s);
+  // set the final coords
+  d3.select(this)
+    .attr("x1", e.source.x)
+    .attr("y1", e.source.y)
+    .attr("x2", x2)
+    .attr("y2", y2);
 }
 
 // configuration DnD of nodes
@@ -251,11 +308,18 @@ function setup_drag_and_drop() {
 
   // callback for beginning of node dragging
   function on_drag_start(d) {
-    // if the simulation is currently steady-state, reactivate it
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    // record simulation target
+    simulation_target_svg = this;
+    simulation_target_node = d;
+
+    // start the simulation, focused on the current node
+    simulation.nodes([d]);
+    simulation.alphaTarget(0.3).restart();
+
     // set drag force to be toward current mouse location
     d.fx = d.x;
     d.fy = d.y;
+
     // we are now dragging
     dragging = true;
   }
